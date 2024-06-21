@@ -6,7 +6,7 @@ const block_size = 25;
 // フィールドの配列を1次元配列として定義
 let field = [];
 //設定
-let ARR = 1;
+let ARR = 10;
 let DAS = 6;
 let SDF = 1;
 let Line_time = 10;
@@ -35,7 +35,7 @@ let tet_y;
 let tet_ghost = 15;
 //システム用
 let tet_gameloop = 0;
-let Tetris_nova = '通常';
+let Tetris_nova = '終了';
 let falling = 0;
 let fall_speed = 60;
 let move = 0;
@@ -419,6 +419,39 @@ function spin_t(x,y){
    return true;
   }
 }
+//ARR
+function ar1(){
+  if(ARR > 1){
+   ARR--;
+  }
+}
+function ar2(){
+  if(ARR < 10){
+   ARR++;
+  }
+}
+//DAS
+function das1(){
+  if(DAS > 0){
+   DAS--;
+  }
+}
+function das2(){
+  if(DAS < 99){
+   DAS++;
+  }
+}
+//SDF
+function sdf1(){
+  if(SDF > 1){
+   SDF--;
+  }
+}
+function sdf2(){
+  if(SDF < 20){
+   SDF++;
+  }
+}
 //----------------ゲームループ---------------
 function gameloop(){
 now = Date.now();
@@ -464,23 +497,21 @@ now = Date.now();
     if(key.left && key.right){
       if(push.left < 1){
        move = -1;
-       push.left++;
+       
     }
     if(push.right < 1){
      move = 1;
-     push.right++;
+     
     }
   }else{
    move = 0;
     if(key.left){
      move = -1;
-     push.left++;
     }else{
      push.left = 0;
     }
     if(key.right){
      move = 1;
-     push.right++;
     }else{
      push.right = 0;
     }
@@ -488,6 +519,7 @@ now = Date.now();
 //横移動
   if(move){
     if(move == 1){
+     push.right++;
      free = ARR * (DAS < push.right) + (push.right <= 1);
       for(let i = 0; i < free; i++){
         if(check_move(1,0,tet_mino)){
@@ -496,6 +528,7 @@ now = Date.now();
         }
       }
     }else{
+     push.left++;
      free = ARR * (DAS < push.left) + (push.left <= 1);
       for(let i = 0; i < free; i++){
         if(check_move(-1,0,tet_mino)){
@@ -666,9 +699,14 @@ now = Date.now();
     }else{
     Line_time_now++;
     }
+  }else{
+    if(Tetris_nova == 'option'){
+     draw_option();
+    }
   }
 }
 //---------------描画---------------
+if(Tetris_nova == '通常' || Tetris_nova == 'gameover' || Tetris_nova == 'ライン消去'){
 //ネクストポジション
 if(next_position > 0){
 next_position = next_position - 9.73;
@@ -710,6 +748,8 @@ if(effect.PC == 0){
   }
 }
 document.getElementById("e_PC").style.display = free;
+document.getElementById("clear").style.display = free;
+}
 //fpsカウントをプラス
 fpscount++
 //---------------FPS計測---------------
@@ -719,15 +759,15 @@ fpscount++
    fpscount = 0;
    fpsTime = now;
   }
-  if(tet_gameloop){
- requestAnimationFrame(gameloop);
+  if(Tetris_nova == '終了'){
+
+  }else{
+   requestAnimationFrame(gameloop);
   }
 }
 //----------初期化----------
-function reset(){
+function tet_reset(){
 var start_time = Date.now();
-//ゲームループ終了
-//tet_gameloop = 0;
 //データリセット
 tet_type = 0;
 next = [];
@@ -736,17 +776,55 @@ tet_hold = 0;
 add_next();
 //フィールドの初期化
 field = [];
-for(let y = 0; y < 30; y++){
-field[y] = [];
-for(let x = 0; x < field_x; x++){
-field[y][x] = 0;
- }
-}
-tet_gameloop = 1;
+  for(let y = 0; y < 30; y++){
+   field[y] = [];
+    for(let x = 0; x < field_x; x++){
+     field[y][x] = 0;
+    }
+  }
+//エフェクトの初期化
+effect.line = 0;
+effect.PC = 0;
+//ぼたんとか非表示
+document.getElementById("playbtn").style.display = 'none';
+document.getElementById("option_back").style.display = 'none';
+//いろいろ表示
+document.getElementById("canvas").style.display = 'block';
+document.getElementById("ca_hold").style.display = 'block';
+document.getElementById("ca_next").style.display = 'block';
+document.getElementById("next").style.display = 'block';
+document.getElementById("hold").style.display = 'block';
+document.getElementById("ca_border").style.display = 'block';
+document.getElementById("fps").style.display = 'block';
+document.getElementById("h1").style.display = 'block';
 Tetris_nova = '通常';
-
 }
-//---------------実行部---------------
+//初期化2
+function reset(){
+Tetris_nova = 'option';
+//いろいろ非表示
+ document.getElementById("canvas").style.display = 'none';
+ document.getElementById("ca_hold").style.display = 'none';
+ document.getElementById("ca_next").style.display = 'none';
+ document.getElementById("next").style.display = 'none';
+ document.getElementById("hold").style.display = 'none';
+ document.getElementById("ca_border").style.display = 'none';
+ document.getElementById("e_PC").style.display = 'none';
+ document.getElementById("clear").style.display = 'none';
+ document.getElementById("e_line").style.display = 'none';
+document.getElementById("fps").style.display = 'none';
+document.getElementById("h1").style.display = 'none';
+//ボタンとか表示
+document.getElementById("playbtn").style.display = 'block';
+document.getElementById("option_back").style.display = 'block';
+}
+//感度とかの反映
+function draw_option(){
+document.querySelector('#ARR').textContent = ARR;
+document.querySelector('#DAS').textContent = DAS;
+document.querySelector('#SDF').textContent = SDF;
+}
+//---------------イベントとか---------------
   //キーイベント
   document.addEventListener('keydown', (event) => {
     if(event.key == 'ArrowUp'){
@@ -771,7 +849,7 @@ Tetris_nova = '通常';
      key.hold = 1;
     }
     if(event.key == 'v')
-     reset();
+     tet_reset();
   });
    document.addEventListener('keyup', (event) => {
     if(event.key == 'ArrowUp'){
@@ -796,6 +874,13 @@ Tetris_nova = '通常';
      key.hold = 0;
     }
   });
-
+document.querySelector('#playbtn').addEventListener('click', tet_reset);
+document.querySelector('#arr-').addEventListener('click', ar1);
+document.querySelector('#arr').addEventListener('click', ar2);
+document.querySelector('#das-').addEventListener('click', das1);
+document.querySelector('#das').addEventListener('click', das2);
+document.querySelector('#sdf-').addEventListener('click', sdf1);
+document.querySelector('#sdf').addEventListener('click', sdf2);
+//実行
 reset();
 requestAnimationFrame(gameloop);
