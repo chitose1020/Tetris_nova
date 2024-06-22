@@ -697,6 +697,7 @@ now = Date.now();
       if(free == 0){
        effect.PC = 'Perfect clear';
        effect_time.PC = Date.now();
+       Line_time_now = Infinity;
       }
       if(tspin_type){
        effect.line = effect_list[2 + tspin_type * 2];
