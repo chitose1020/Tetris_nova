@@ -767,7 +767,7 @@ if(effect.PC == 0){
  free = 'none';
 }else{
  free = 'block';
-  if(now - effect_time.PC > 5000){
+  if(now - effect_time.PC > 3000){
    effect.PC = '0';
   }
 }
@@ -824,6 +824,7 @@ function tet_reset(){
    document.getElementById("ca_border").style.display = 'block';
    document.getElementById("fps").style.display = 'block';
    document.getElementById("h1").style.display = 'block';
+   document.getElementById("e_line").style.display = 'block';
    Tetris_nova = '通常';
   }
 }
