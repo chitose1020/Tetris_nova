@@ -178,6 +178,18 @@ const canvas_next = ca_next.getContext("2d");
 ca_next.width = canvas_next_x;
 ca_next.height = canvas_next_y;
 //キー判定用
+let key_option = '';
+let keycon = [
+'ArrowUp',
+'ArrowDown',
+'ArrowLeft',
+'ArrowRight',
+'c',
+'x',
+'z',
+'v',
+'r'
+];
 let key = {
 up : 0,
 down : 0,
@@ -711,7 +723,7 @@ now = Date.now();
     Line_time_now++;
     }
   }else{
-    if(Tetris_nova == 'option'){
+    if(Tetris_nova == 'option' || Tetris_nova == 'key_option'){
      draw_option();
     }
   }
@@ -778,37 +790,41 @@ fpscount++
 }
 //----------初期化----------
 function tet_reset(){
-var start_time = Date.now();
+  if(Tetris_nova == 'key_option'){
+     alert('Some keys are not set.');
+  }else{
+   var start_time = Date.now();
 //データリセット
-tet_type = 0;
-next = [];
-tet_hold = 0;
+   tet_type = 0;
+   next = [];
+   tet_hold = 0;
 //ネクスト
-add_next();
+   add_next();
 //フィールドの初期化
-field = [];
-  for(let y = 0; y < 30; y++){
-   field[y] = [];
-    for(let x = 0; x < field_x; x++){
-     field[y][x] = 0;
+   field = [];
+    for(let y = 0; y < 30; y++){
+     field[y] = [];
+      for(let x = 0; x < field_x; x++){
+       field[y][x] = 0;
+      }
     }
-  }
 //エフェクトの初期化
-effect.line = 0;
-effect.PC = 0;
+   effect.line = 0;
+   effect.PC = 0;
 //ぼたんとか非表示
-document.getElementById("playbtn").style.display = 'none';
-document.getElementById("option_back").style.display = 'none';
+   document.getElementById("playbtn").style.display = 'none';
+   document.getElementById("option_back").style.display = 'none';
 //いろいろ表示
-document.getElementById("canvas").style.display = 'block';
-document.getElementById("ca_hold").style.display = 'block';
-document.getElementById("ca_next").style.display = 'block';
-document.getElementById("next").style.display = 'block';
-document.getElementById("hold").style.display = 'block';
-document.getElementById("ca_border").style.display = 'block';
-document.getElementById("fps").style.display = 'block';
-document.getElementById("h1").style.display = 'block';
-Tetris_nova = '通常';
+   document.getElementById("canvas").style.display = 'block';
+   document.getElementById("ca_hold").style.display = 'block';
+   document.getElementById("ca_next").style.display = 'block';
+   document.getElementById("next").style.display = 'block';
+   document.getElementById("hold").style.display = 'block';
+   document.getElementById("ca_border").style.display = 'block';
+   document.getElementById("fps").style.display = 'block';
+   document.getElementById("h1").style.display = 'block';
+   Tetris_nova = '通常';
+  }
 }
 //初期化2
 function reset(){
@@ -835,57 +851,117 @@ document.querySelector('#ARR').textContent = ARR;
 document.querySelector('#DAS').textContent = DAS;
 document.querySelector('#SDF').textContent = SDF;
 document.querySelector('#e_fspan').textContent = Line_time;
+document.querySelector('#key_h').textContent = keycon[0];
+document.querySelector('#key_s').textContent = keycon[1];
+document.querySelector('#key_r').textContent = keycon[3];
+document.querySelector('#key_l').textContent = keycon[2];
+document.querySelector('#key_rr').textContent = keycon[5];
+document.querySelector('#key_rl').textContent = keycon[6];
+document.querySelector('#key_re').textContent = keycon[7];
+document.querySelector('#key_reop').textContent = keycon[8];
+document.querySelector('#key_ho').textContent = keycon[4];
+}
+function k_r(){
+ Tetris_nova = 'key_option';
+ keycon[3] = '...';
+ key_option = 3;
+}
+function k_l(){
+ Tetris_nova = 'key_option';
+ keycon[2] = '...';
+ key_option = 2;
+}
+function k_u(){
+ Tetris_nova = 'key_option';
+ keycon[0] = '...';
+ key_option = 0;
+}
+function k_d(){
+ Tetris_nova = 'key_option';
+ keycon[1] = '...';
+ key_option = 1;
+}
+function k_h(){
+  Tetris_nova = 'key_option';
+ keycon[4] = '...';
+ key_option = 4;
+}
+function k_rr(){
+  Tetris_nova = 'key_option';
+ keycon[5] = '...';
+ key_option = 5;
+}
+function k_rl(){
+  Tetris_nova = 'key_option';
+ keycon[6] = '...';
+ key_option = 6;
+}
+function k_re(){
+  Tetris_nova = 'key_option';
+ keycon[7] = '...';
+ key_option = 7;
 }
 //---------------イベントとか---------------
-  //キーイベント
+//キーイベント
   document.addEventListener('keydown', (event) => {
-    if(event.key == 'ArrowUp'){
+  if(Tetris_nova == 'key_option'){
+   keycon[key_option] = event.key;
+   Tetris_nova = 'option';
+  }else{
+    if(event.key == keycon[0]){
      key.up = 1;
     }
-    if(event.key == 'ArrowDown'){
+    if(event.key == keycon[1]){
      key.down = 1;
     }
-    if(event.key == 'ArrowLeft'){
+    if(event.key == keycon[2]){
      key.left = 1;
     }
-    if(event.key == 'ArrowRight'){
+    if(event.key == keycon[3]){
      key.right = 1;
     }
-    if(event.key == 'z'){
+    if(event.key == keycon[6]){
      key.Rleft = 1;
     }
-    if(event.key == 'x'){
+    if(event.key == keycon[5]){
      key.Rright = 1;
     }
-    if(event.key == 'c'){
+    if(event.key == keycon[4]){
      key.hold = 1;
     }
-    if(event.key == 'v')
-     tet_reset();
-  });
-   document.addEventListener('keyup', (event) => {
-    if(event.key == 'ArrowUp'){
+    if(event.key == keycon[7]){
+      if(Tetris_nova != 'option'){
+       tet_reset();
+      }
+    }
+    if(event.key == keycon[8]){
+     reset();
+    }
+  }
+});
+document.addEventListener('keyup', (event) => {
+    if(event.key == keycon[0]){
      key.up = 0;
     }
-    if(event.key == 'ArrowDown'){
+    if(event.key == keycon[1]){
      key.down = 0;
     }
-    if(event.key == 'ArrowLeft'){
+    if(event.key == keycon[2]){
      key.left = 0;
     }
-    if(event.key == 'ArrowRight'){
+    if(event.key == keycon[3]){
      key.right = 0;
     }
-    if(event.key == 'z'){
+    if(event.key == keycon[6]){
      key.Rleft = 0;
     }
-    if(event.key == 'x'){
+    if(event.key == keycon[5]){
      key.Rright = 0;
     }
-    if(event.key == 'c'){
+    if(event.key == keycon[4]){
      key.hold = 0;
     }
-  });
+});
 document.querySelector('#playbtn').addEventListener('click', tet_reset);
 document.querySelector('#arr-').addEventListener('click', ar1);
 document.querySelector('#arr').addEventListener('click', ar2);
@@ -895,6 +971,14 @@ document.querySelector('#sdf-').addEventListener('click', sdf1);
 document.querySelector('#sdf').addEventListener('click', sdf2);
 document.querySelector('#e_f-').addEventListener('click', e_f1);
 document.querySelector('#e_f').addEventListener('click', e_f2);
+document.querySelector('#k_r').addEventListener('click', k_r);
+document.querySelector('#k_l').addEventListener('click', k_l);
+document.querySelector('#k_u').addEventListener('click', k_u);
+document.querySelector('#k_d').addEventListener('click', k_d);
+document.querySelector('#k_h').addEventListener('click', k_h);
+document.querySelector('#k_rr').addEventListener('click', k_rr);
+document.querySelector('#k_rl').addEventListener('click', k_rl);
+document.querySelector('#k_re').addEventListener('click', k_re);
 //実行
 reset();
 requestAnimationFrame(gameloop);
