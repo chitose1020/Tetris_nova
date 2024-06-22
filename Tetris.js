@@ -901,6 +901,11 @@ function k_re(){
  keycon[7] = '...';
  key_option = 7;
 }
+function k_reop(){
+ Tetris_nova = 'key_option';
+ keycon[8] = '...';
+ key_option = 8;
+}
 //---------------イベントとか---------------
 //キーイベント
   document.addEventListener('keydown', (event) => {
@@ -979,6 +984,7 @@ document.querySelector('#k_h').addEventListener('click', k_h);
 document.querySelector('#k_rr').addEventListener('click', k_rr);
 document.querySelector('#k_rl').addEventListener('click', k_rl);
 document.querySelector('#k_re').addEventListener('click', k_re);
+document.querySelector('#k_reop').addEventListener('click', k_reop);
 //実行
 reset();
 requestAnimationFrame(gameloop);
