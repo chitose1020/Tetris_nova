@@ -160,6 +160,25 @@ left: 150px;
 top: 67px;
 left: 200px;
 }
+p4{
+font-size: 25px;
+position: absolute;
+top: 90px;
+left: 0px;
+}
+p5{
+position: absolute;
+top:110px;
+left:10px;
+}
+#e_f-{
+top: 117px;
+left: 150px;
+}
+#e_f{
+left: 200px;
+top:117px;
+}
 button{
 position: absolute;
 background-color: white;
