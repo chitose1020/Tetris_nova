@@ -118,13 +118,13 @@ filter: brightness(1.1);
 #kando{
 filter: brightness(1);
 position: absolute;
-top: 70px;
+top: 55px;
 font-size: 40px
 }
 p{
 font-size: 25px;
 position: absolute;
-top: 130px;
+top: 115px;
 }
 #arr-{
 top: 7px;
@@ -184,4 +184,51 @@ position: absolute;
 background-color: white;
 height: 20px;
 width: 20px;
+}
+#key{
+font-size: 40px;
+top: 235px;
+}
+p6{
+font-size: 20px;
+position: absolute;
+top: 325px;
+left: 0px;
+}
+#keyspan{
+left: 200px;
+}
+.keyconbtn{
+height : 20px;
+width : 60px;
+position: absolute;
+top : 327px;
+left : 350px;
+}
+#k_r{
+top : 327px;
+}
+#k_l{
+top : 357px;
+}
+#k_u{
+top : 387px;
+}
+#k_d{
+top : 417px;
+}
+#k_h{
+top: 447px;
+}
+#k_rr{
+top: 477px;
+}
+#k_rl{
+top: 507px;
+}
+#k_re{
+top: 537px;
+}
+#k_reop{
+top: 567px;
 }
