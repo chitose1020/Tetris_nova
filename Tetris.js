@@ -6,8 +6,8 @@ const block_size = 25;
 // フィールドの配列を1次元配列として定義
 let field = [];
 //設定
-let ARR = 10;
-let DAS = 6;
+let ARR = 1;
+let DAS = 5;
 let SDF = 1;
 let Line_time = 10;
 let Line_time_now = 0;
@@ -452,6 +452,17 @@ function sdf2(){
    SDF++;
   }
 }
+//erase frame
+function e_f1(){
+  if(Line_time > 0){
+   Line_time--;
+  }
+}
+function e_f2(){
+  if(Line_time < 99){
+   Line_time++;
+  }
+}
 //----------------ゲームループ---------------
 function gameloop(){
 now = Date.now();
@@ -823,6 +834,7 @@ function draw_option(){
 document.querySelector('#ARR').textContent = ARR;
 document.querySelector('#DAS').textContent = DAS;
 document.querySelector('#SDF').textContent = SDF;
+document.querySelector('#e_fspan').textContent = Line_time;
 }
 //---------------イベントとか---------------
   //キーイベント
@@ -881,6 +893,8 @@ document.querySelector('#das-').addEventListener('click', das1);
 document.querySelector('#das').addEventListener('click', das2);
 document.querySelector('#sdf-').addEventListener('click', sdf1);
 document.querySelector('#sdf').addEventListener('click', sdf2);
+document.querySelector('#e_f-').addEventListener('click', e_f1);
+document.querySelector('#e_f').addEventListener('click', e_f2);
 //実行
 reset();
 requestAnimationFrame(gameloop);
