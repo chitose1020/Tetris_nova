@@ -36,8 +36,9 @@ let tet_ghost = 15;
 //システム用
 let tet_gameloop = 0;
 let Tetris_nova = '終了';
+let m_y = 0;
 let falling = 0;
-let fall_speed = 60;
+let fall_speed = 30;
 let move = 0;
 let new_mino;
 let xx;
@@ -46,6 +47,43 @@ let yy;
 let rock_down = 0;
 let rock_down_cancel = 0;
 //エフェクト
+let T_spin = 0;
+const e_border2 = [
+'white',
+'white',
+'white',
+'white',
+'#20cae8',
+'#20e88b',
+'#202ee8',
+'#202ee8',
+'#ff9d00',
+'#ff9d00'
+];
+const e_border = [
+'#78ffff',
+'#8aff63',
+'#fcff3d',
+'#ff2600',
+'#d119bc',
+'#d119bc',
+'#d119bc',
+'#d119bc',
+'#d119bc',
+'#d119bc'
+];
+const e_color = [
+'#ffffff',
+'#ffffff',
+'#ffffff',
+'',
+'#ffffff',
+'#ffffff',
+'#ffffff',
+'#ffffff',
+'#ffffff',
+'#ffffff'
+];
 let PC = [];
 let effect = {
 line : 0,
@@ -62,12 +100,12 @@ const effect_list = [
 'double',
 'triple',
 'tetris',
-'T-spin mini',
-'T-spin single',
-'T-spin double',
-'T-spin double',
-'T-spin triple',
-'T-spin triple'
+'mini',
+'single',
+'double',
+'double',
+'triple',
+'triple'
 
 ];
 //消去判定用
@@ -405,9 +443,11 @@ n.splice(random, 1);
 function set_mino(type){
  tet_x = 3;
  tet_y = 3;
+ m_y = 3;
  tet_dir = 0;
  tet_mino = tet_types[type];
  rock_down = 0;
+ rock_down_cancel = 0;
  next_position = block_size * 3.5;
   if(!check_move(0,0,tet_mino)){
    Tetris_nova = 'gameover';
@@ -640,6 +680,10 @@ now = Date.now();
     if(falling > fall_speed){
      falling = 0;
      tet_y++;
+      if(m_y < tet_y){
+       m_y = tet_y;
+       rock_down_cancel = 0;
+      }
     }
   }else{
    rock_down++;
@@ -656,6 +700,12 @@ now = Date.now();
     }
   } else {
     push.up = 0;
+  }
+  if(rock_down_cancel == 15){
+    if(check_move(0,1,tet_mino)){
+    }else{
+     free = 1;
+    }
   }
 //設置
   if(free){
@@ -700,9 +750,23 @@ now = Date.now();
        Line_time_now = Infinity;
       }
       if(tspin_type){
-       effect.line = effect_list[2 + tspin_type * 2];
+       var free2 = line * 2 + (tspin_type + 1);
+       var ff = '-webkit-text-stroke: 2px ' + e_border[free2]+ ';';
+       var ff2 = '-webkit-text-stroke: 2px ' + e_border2[free2]+ ';';
+       document.getElementById("eline").setAttribute("style", ff);
+       document.getElementById("eline2").setAttribute("style", ff2);
+       document.getElementById("eline").style.color = e_color[free2];
+       effect.line = effect_list[free2];
+       T_spin = 1;
       }else{
-       effect.line = effect_list[line - 1];
+       var free2 = line - 1;
+       var ff = '-webkit-text-stroke: 2px ' + e_border[free2]+ ';';
+       var ff2 = '-webkit-text-stroke: 2px ' + e_border2[free2]+ ';';
+       effect.line = effect_list[free2];
+       document.getElementById("eline").setAttribute("style", ff);
+       document.getElementById("eline2").setAttribute("style", ff2);
+       document.getElementById("eline").style.color = e_color[free2];
+       T_spin = 0;
       }
 
     }
@@ -753,15 +817,25 @@ draw_next();
 draw_hold();
 //エフェクト
 var free = 0;
+var free2 = 0;
 if(effect.line == 0){
  free = '';
+ free2 = '';
 }else{
+ if(T_spin){
+ free = 'T-spin';
+ free2 = effect.line;
+ }else{
  free = effect.line;
+ free2 = '';
+ }
   if(now - effect_time.line > 1000){
    effect.line = 0;
   }
 }
-document.querySelector('#e_line').textContent = free;
+document.getElementById('eline').textContent = free;
+document.getElementById('eline2').textContent = free2;
+
 var free = 0;
 if(effect.PC == 0){
  free = 'none';
@@ -824,7 +898,8 @@ function tet_reset(){
    document.getElementById("ca_border").style.display = 'block';
    document.getElementById("fps").style.display = 'block';
    document.getElementById("h1").style.display = 'block';
-   document.getElementById("e_line").style.display = 'block';
+   document.getElementById("eline").style.display = 'block';
+   document.getElementById("eline2").style.display = 'block';
    Tetris_nova = '通常';
   }
 }
@@ -840,9 +915,9 @@ Tetris_nova = 'option';
  document.getElementById("ca_border").style.display = 'none';
  document.getElementById("e_PC").style.display = 'none';
  document.getElementById("clear").style.display = 'none';
- document.getElementById("e_line").style.display = 'none';
-document.getElementById("fps").style.display = 'none';
-document.getElementById("h1").style.display = 'none';
+ document.getElementById("eline2").style.display = 'none';
+ document.getElementById("fps").style.display = 'none';
+ document.getElementById("h1").style.display = 'none';
 //ボタンとか表示
 document.getElementById("playbtn").style.display = 'block';
 document.getElementById("option_back").style.display = 'block';
