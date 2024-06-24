@@ -43,6 +43,8 @@ let move = 0;
 let new_mino;
 let xx;
 let yy;
+//BtoBとか
+let Ren = -1;
 //ロックダウン
 let rock_down = 0;
 let rock_down_cancel = 0;
@@ -193,28 +195,24 @@ let tet_colors = [
 '#f314ff',
 '#5c5c5c'
 ]
-//---------------キャンバス---------------
-//フィールド
-const canvas_x = block_size * field_x;
-const canvas_y = block_size * field_y;
-const canvasId = document.getElementById('canvas');
-const conText = canvas.getContext("2d");
-canvas.width = canvas_x;
-canvas.height = canvas_y;
-//ホールド用キャンバス
-const canvas_hold_x = block_size * 4.5;
-const canvas_hold_y = block_size * 2.5;
-const canvasid = document.getElementById('ca_hold');
-const canvas_hold = ca_hold.getContext("2d");
-ca_hold.width = canvas_hold_x;
-ca_hold.height = canvas_hold_y;
-//ネクスト用キャンバス
-const canvas_next_x = block_size * 4.5;
-const canvas_next_y = block_size * 12.5;
-const canvasID = document.getElementById('ca_next');
-const canvas_next = ca_next.getContext("2d");
-ca_next.width = canvas_next_x;
-ca_next.height = canvas_next_y;
+
+//音
+let tet_sound = 0;
+let sound = [];
+sound[1] = new Audio('設置.mp3');
+sound[2] = new Audio('ライン消去.mp3');
+sound[3] = new Audio('Tspin回転音.mp3');
+sound[4] = new Audio('T-spin.mp3');
+sound[5] = new Audio('パフェ.mp3');
+sound[6] = new Audio('1.mp3');
+sound[7] = new Audio('2.mp3');
+sound[8] = new Audio('3.mp3');
+sound[9] = new Audio('4.mp3');
+sound[10] = new Audio('5.mp3');
+sound[11] = new Audio('6.mp3');
+for(let i = 2; i < 6; i++){
+sound[i].volume = 0.03;
+}
 //キー判定用
 let key_option = '';
 let keycon = [
@@ -247,6 +245,28 @@ Rright : 0,
 }
 
 const field_h = 20 * block_size;
+//----------------キャンバス---------------
+//フィールド
+const canvas_x = block_size * field_x;
+const canvas_y = block_size * field_y;
+const canvasId = document.getElementById('canvas');
+const conText = canvas.getContext("2d");
+canvas.width = canvas_x;
+canvas.height = canvas_y;
+//ホールド用キャンバス
+const canvas_hold_x = block_size * 4.5;
+const canvas_hold_y = block_size * 2.5;
+const canvasid = document.getElementById('ca_hold');
+const canvas_hold = ca_hold.getContext("2d");
+ca_hold.width = canvas_hold_x;
+ca_hold.height = canvas_hold_y;
+//ネクスト用キャンバス
+const canvas_next_x = block_size * 4.5;
+const canvas_next_y = block_size * 12.5;
+const canvasID = document.getElementById('ca_next');
+const canvas_next = ca_next.getContext("2d");
+ca_next.width = canvas_next_x;
+ca_next.height = canvas_next_y;
 //---------------関数----------------
 //ネクスト描画
 function draw_next(){
@@ -517,6 +537,8 @@ function e_f2(){
 }
 //----------------ゲームループ---------------
 function gameloop(){
+//音リセット
+tet_sound = 0;
 now = Date.now();
   if(Tetris_nova == '通常'){
    var free = 0;
@@ -657,6 +679,7 @@ now = Date.now();
           }
         }
         if(2 < t_3){
+         tet_sound = 3;
          tspin_position = [tet_x,tet_y];
          var t_1 = tspin_mini[tet_dir][0];
          var t_2 = tspin_mini[tet_dir][1];
@@ -693,10 +716,12 @@ now = Date.now();
      rock_down = 0;
     }
   }
+//ハードドロップ
   if(key.up){
     if(push.up < 1){
      push.up = 1;
      free = 1;
+     tet_sound = 1;
     }
   } else {
     push.up = 0;
@@ -734,6 +759,8 @@ now = Date.now();
     }
    var line = delete_mino.length;
     if(line){
+     Ren++;
+     console.log(Ren);
      Line_time_now = 0;
      Tetris_nova = 'ライン消去';
 //---------------ボーナス---------------
@@ -748,6 +775,7 @@ now = Date.now();
        effect.PC = 'Perfect clear';
        effect_time.PC = Date.now();
        Line_time_now = Infinity;
+       tet_sound = 5;
       }
       if(tspin_type){
        var free2 = line * 2 + (tspin_type + 1);
@@ -768,7 +796,23 @@ now = Date.now();
        document.getElementById("eline").style.color = e_color[free2];
        T_spin = 0;
       }
-
+      if(tet_sound != 5){
+        if(line == 4 || tspin_type != 0){
+         tet_sound = 4;
+        }else{
+          if(Ren > 0){
+            if(Ren > 6){
+             tet_sound = 11;
+            }else{
+             tet_sound = Ren + 5;
+            }
+          }else{
+           tet_sound = 2;
+          }
+        }
+      }
+    }else{
+     Ren = -1;
     }
   }
 }else{
@@ -857,9 +901,13 @@ fpscount++
    fpscount = 0;
    fpsTime = now;
   }
-  if(Tetris_nova == '終了'){
-
-  }else{
+//効果音
+  if(tet_sound){
+     sound[tet_sound].pause();
+     sound[tet_sound].currentTime = 0;
+     sound[tet_sound].play();
+  }
+  if(Tetris_nova != '終了'){
    requestAnimationFrame(gameloop);
   }
 }
